@@ -1,5 +1,4 @@
 package sample;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +28,7 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
  MediaPlayer player;
+ ObservableList<String> observableList;
     @Override
     public void start(Stage primaryStage) throws Exception{
         File directory;
@@ -50,7 +50,8 @@ public class Main extends Application {
         gridLayout.add(hbButton,1,4);
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directory = directoryChooser.showDialog(primaryStage);
-        ObservableList<String> observableList = FXCollections.observableList(makePlayList(directory));
+        observableList = FXCollections.observableList(makePlayList(directory));
+
         ListView<String> songs = new ListView<String>(observableList);
         gridLayout.add(songs,1,1);
         //  Media aSong; // = new Media(directory.toURI()+"/"+observableList.get(0));
@@ -62,23 +63,13 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                if(event.getClickCount() == 2) {
-                   Media aSong = new Media(directory.toURI() + "/" + songs.getSelectionModel().getSelectedItem());
+                   String songFile = new String(songs.getSelectionModel().getSelectedItem()); //This gives me the song name as String
+                   System.out.println(songFile);
+                   Media aSong = new Media(directory.toURI().toString()+songFile ); // In side the () the two strings combine
                    player = new MediaPlayer(aSong);
                    //boolean playing = player.getStatus().equals(MediaPlayer.Status.PLAYING);
-                   player.setOnReady(new Runnable() {
-                       @Override
-                       public void run() {
-                           player.play();
-                       }
-                   });
-                   player.setOnPlaying(new Runnable() {
-                       @Override
-                       public void run() {
-                           System.out.println(player.getStatus());
-                           player.stop();
-                           player.play();
-                       }
-                   });
+                   player.play();
+
 
 
 
