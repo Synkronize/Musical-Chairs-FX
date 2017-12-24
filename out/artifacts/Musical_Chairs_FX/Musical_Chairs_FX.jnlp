@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Musical_Chairs_FX.jnlp">
+  <information>
+    <title>Musical Chairs</title>
+    <vendor>Jude</vendor>
+    <description>Musical-Chairs-FX</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="Musical_Chairs_FX.jar" size="14558" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="600" height="400" main-class="Main.main"  name="Musical-Chairs-FX" />
+  <update check="background"/>
+</jnlp>
