@@ -1,7 +1,7 @@
 package sample;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -31,23 +31,24 @@ import java.util.prefs.Preferences;
 import javafx.event.*;
 import javafx.scene.input.*;
 public class Main extends Application {
-    MediaPlayer player;
-    boolean playing;
-    long randomNum;
-    Thread game;
+    private MediaPlayer player;
+    private boolean playing;
+    private long randomNum;
+    private  Thread game;
     private Preferences preferences;
-    String ID;
-    ObservableList<String> observableList;
-    File directory;
-    int lowerVal = 10;
-    int upperVal = 27;
+    private String ID;
+    private ObservableList<String> observableList;
+    private File directory;
+    private int lowerVal = 10;
+    private int upperVal = 27;
+    private ListView<String> songs;
     @Override
     public void start(Stage primaryStage) throws Exception{
-
         DirectoryChooser directoryChooser = new DirectoryChooser();
         primaryStage.setTitle("Musical Chairs");
+        /*Setting up the preference settings for the user*/
         preferences = Preferences.userRoot().node(this.getClass().getName());
-        ID = new String("Preferred Directory");
+        ID = "Preferred Directory";
         preferences.get(ID,"");
         if(preferences.get(ID,"").equals("")){
             directory = directoryChooser.showDialog(primaryStage);
@@ -61,8 +62,10 @@ public class Main extends Application {
         }
         else{
             directory = new File(preferences.get(ID,""));
-            observableList = FXCollections.observableList(makePlayList(directory));
+            observableList = FXCollections.observableList(makePlayList(directory));//observableList is like a list model, it is the model for our list, and it will update my list.
+
         }
+
         Menu menuFile = new Menu("File");
         menuFile.setMnemonicParsing(true);
         menuFile.setAccelerator(KeyCombination.keyCombination("SHORTCUT+F"));
@@ -83,6 +86,7 @@ public class Main extends Application {
                     while(observableList.isEmpty()){
                         directoryTemp = directoryChooser.showDialog(primaryStage);
                         observableList = FXCollections.observableList(makePlayList(directoryTemp));
+                        
                     }
                     preferences.put(ID, directory.toString());
                 }
@@ -91,7 +95,7 @@ public class Main extends Application {
         chooseDirectory.setMnemonicParsing(true);
         menuFile.getItems().add(chooseDirectory);
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        System.out.println("...");
+
         BorderPane borderPane = new BorderPane();
         Scene panel = new Scene(borderPane,260,200);
         Button play = new Button();
@@ -102,7 +106,8 @@ public class Main extends Application {
         HBox hbButton =  new HBox(10);
         hbButton.setAlignment(Pos.BOTTOM_LEFT);
         hbButton.getChildren().add(play);
-        ListView<String> songs = new ListView<String>(observableList);
+
+
         borderPane.setTop(menuBar);
         borderPane.setLeft(songs);
         borderPane.setBottom(hbButton);
@@ -220,11 +225,17 @@ public class Main extends Application {
         menuBar.getMenus().add(settings);
 
     }
-    public  void randomNumGenerator(){
+    private   void randomNumGenerator(){
         System.out.println(lowerVal);
         System.out.println(upperVal);
         randomNum = ThreadLocalRandom.current().nextInt(lowerVal,upperVal);
 
+    }
+    private void addItems(String song,int index){
+        observableList.add(index,song);
+    }
+    private void clearItems(){
+        observableList.clear();
     }
     class Game implements Runnable{
         @Override
